@@ -4,55 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}B10 | Bateria Dezorganizada{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        display: ['Bahnschrift', 'Arial Narrow', 'sans-serif'],
-                        sans: ['-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        display: ['Archivo', 'Arial Narrow', 'sans-serif'],
+                        sans: ['Inter', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
                     },
                     colors: {
-                        base: '#070604',
-                        card: '#110e0b',
-                        line: '#2b2119',
-                        smoke: '#948a7c',
-                        fire1: '#ffd23f',
-                        fire2: '#ff7a1a',
-                        fire3: '#ff2340',
+                        base: '#0a0a0a',
+                        card: '#131313',
+                        line: '#1e1e1e',
+                        smoke: '#8c8c8c',
+                        fire1: '#f5c400',
+                        fire2: '#ffd21a',
+                        fire3: '#e84d4d',
                         bronze: '#c78a4b',
                         silver: '#c0c0c0',
-                        gold: '#ffd23f',
-                        legend: '#ff2340',
+                        gold: '#f5c400',
+                        legend: '#e84d4d',
                     },
                 }
             }
         }
     </script>
     <style>
-        @font-face {
-            font-family: 'Bahnschrift';
-            src: url("{% static 'fonts/bahnschrift.ttf' %}") format('truetype');
-            font-weight: 100 900;
-            font-display: swap;
-        }
-        body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        body { font-family: var(--b10-font-body); }
         h1, h2, h3, .font-display {
-            font-family: 'Bahnschrift', 'Arial Narrow', sans-serif;
-            font-weight: 800;
+            font-family: var(--b10-font-display);
+            font-weight: var(--b10-font-weight-extrabold);
             letter-spacing: -0.005em;
         }
 
         input[type=text], input[type=password], input[type=email], input[type=number] {
             width: 100%;
-            background-color: #110e0b;
-            border: 1px solid #2b2119;
+            background-color: var(--b10-color-surface);
+            border: 1px solid var(--b10-color-border);
             border-radius: 0.5rem;
             padding: 0.6rem 0.9rem;
-            color: white;
+            color: var(--b10-color-text);
         }
-        input:focus { outline: 2px solid #ff7a1a; outline-offset: 1px; }
+        input:focus { outline: 2px solid var(--b10-color-primary); outline-offset: 1px; }
 
         @keyframes fab-pop {
             0% { transform: scale(0); opacity: 0; }
@@ -68,8 +63,8 @@
         .beat { animation: beat 2.4s ease-in-out infinite; }
 
         @keyframes pulse-ring {
-            0%, 100% { box-shadow: 0 14px 34px -8px rgba(255, 40, 30, 0.65), 0 0 0 1px rgba(255,255,255,0.08); }
-            50% { box-shadow: 0 14px 40px -6px rgba(255, 60, 20, 0.85), 0 0 0 8px rgba(255, 106, 0, 0.06); }
+            0%, 100% { box-shadow: 0 14px 34px -8px rgba(245, 196, 0, 0.45), 0 0 0 1px rgba(255,255,255,0.08); }
+            50% { box-shadow: 0 14px 40px -6px rgba(245, 196, 0, 0.65), 0 0 0 8px rgba(245, 196, 0, 0.08); }
         }
         .pulse-cart { animation: pulse-ring 3.2s ease-in-out infinite; }
 
@@ -78,41 +73,122 @@
         }
 
         .fire-text {
-            background: linear-gradient(90deg, #ffd23f, #ff7a1a 55%, #ff2340);
+            background: linear-gradient(90deg, var(--b10-color-primary-hover), var(--b10-color-primary-active));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         .btn-fire {
-            background: linear-gradient(135deg, #ffd23f 0%, #ff7a1a 55%, #ff2340 100%);
-            box-shadow: 0 0 25px -6px rgba(255, 106, 0, 0.7);
-            color: #1a0d02;
+            background: linear-gradient(135deg, var(--b10-color-primary-hover) 0%, var(--b10-color-primary) 100%);
+            box-shadow: 0 0 25px -6px rgba(245, 196, 0, 0.55);
+            color: var(--b10-color-text-dark);
         }
-        .btn-fire:hover { box-shadow: 0 0 35px -3px rgba(255, 35, 64, 0.85); }
+        .btn-fire:hover { box-shadow: 0 0 35px -3px rgba(245, 196, 0, 0.75); }
         .btn-fire:active { transform: scale(0.97); }
 
         .hero-glow {
             background:
-                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(255,122,26,0.28), transparent),
-                #070604;
+                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(245,196,0,0.18), transparent),
+                var(--b10-color-background);
         }
 
-        :focus-visible { outline: 2px solid #ff7a1a; outline-offset: 3px; }
+        .product-card-glow {
+            border: 2px solid var(--b10-color-border);
+        }
+
+        .card-trace {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .card-trace-outline,
+        .card-trace-shine {
+            x: 1px;
+            y: 1px;
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            rx: 14px;
+            fill: none;
+            vector-effect: non-scaling-stroke;
+        }
+        .card-trace-outline {
+            stroke: url(#b10-card-gradient);
+            stroke-width: 2;
+            stroke-dasharray: var(--peri, 1000);
+            stroke-dashoffset: var(--peri, 1000);
+            transition: stroke-dashoffset 700ms ease;
+        }
+        .card-trace-shine {
+            stroke: rgba(255, 255, 255, 0.95);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 36 calc(var(--peri, 1000) - 36);
+            opacity: 0;
+        }
+        .product-card-glow:hover .card-trace-outline,
+        .product-card-glow:focus-within .card-trace-outline {
+            stroke-dashoffset: 0;
+        }
+        .product-card-glow:hover .card-trace-shine,
+        .product-card-glow:focus-within .card-trace-shine {
+            animation: b10-card-shine-run 1.3s 700ms ease-in-out forwards;
+        }
+        @keyframes b10-card-shine-run {
+            0% { stroke-dashoffset: var(--peri, 1000); opacity: 0; }
+            8% { opacity: 1; }
+            88% { opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .card-trace-outline { transition: none; }
+            .card-trace-shine { animation: none !important; }
+        }
+
+        .hero-bateria {
+            background:
+                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(245,196,0,0.16), transparent),
+                linear-gradient(180deg, var(--b10-color-overlay), rgba(10,10,10,0.92)),
+                url("{% static 'img/hero-bateria.png' %}") center 30% / cover no-repeat;
+        }
+
+        .nav-link-active {
+            color: var(--b10-color-primary);
+            text-shadow: 0 0 10px rgba(245, 196, 0, 0.55);
+        }
+
+        :focus-visible { outline: 2px solid var(--b10-color-primary); outline-offset: 3px; }
     </style>
 </head>
 <body class="h-full bg-base text-white flex flex-col min-h-screen antialiased">
 
-    <header class="bg-[rgba(5,4,3,0.86)] border-b border-line sticky top-0 z-40 backdrop-blur">
+    <svg width="0" height="0" class="absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="b10-card-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f5c400"/>
+                <stop offset="47%" stop-color="#f5c400"/>
+                <stop offset="50%" stop-color="#ffffff"/>
+                <stop offset="53%" stop-color="#39b86b"/>
+                <stop offset="100%" stop-color="#39b86b"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <header class="bg-[rgba(10,10,10,0.86)] border-b border-line sticky top-0 z-40 backdrop-blur">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
-            <a href="{% url 'catalog' %}" class="font-display text-3xl uppercase tracking-wide flex items-baseline gap-2">
-                <span class="fire-text">B10</span> <span class="text-white text-xl">Dezorganizada</span>
+            <a href="{% url 'catalog' %}" class="flex items-center gap-3">
+                <img src="{% static 'img/logo-BPCdLhrc.png' %}" alt="B10 Dezorganizada" class="h-11 w-11 rounded-full border border-line">
+                <span class="font-display text-3xl uppercase tracking-wide flex items-baseline gap-2">
+                    <span class="fire-text">B10</span> <span class="text-white text-xl">Dezorganizada</span>
+                </span>
             </a>
 
             <nav class="flex items-center gap-5 text-sm font-bold uppercase tracking-wide text-smoke">
-                <a href="{% url 'catalog' %}" class="hover:text-white transition">Loja</a>
+                <a href="{% url 'catalog' %}" class="nav-link hover:text-white transition {% if request.resolver_match.url_name == 'catalog' %} nav-link-active {% endif %}">Loja</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'dashboard' %}" class="hover:text-white transition">Meu Passaporte</a>
-                    <a href="{% url 'cart_detail' %}" class="hover:text-white transition relative">
+                    <a href="{% url 'dashboard' %}" class="nav-link hover:text-white transition {% if request.resolver_match.url_name == 'dashboard' %} nav-link-active {% endif %}">Meu Passaporte</a>
+                    <a href="{% url 'cart_detail' %}" class="nav-link hover:text-white transition relative {% if request.resolver_match.url_name == 'cart_detail' %} nav-link-active {% endif %}">
                         Carrinho
                         <span id="cart-badge-count" class="beat absolute -top-2 -right-3 bg-fire3 text-white text-xs font-black rounded-full w-5 h-5 flex items-center justify-center shadow-[0_0_0_2px_#070604] {% if not cart_items_count %}hidden{% endif %}">{{ cart_items_count }}</span>
                     </a>
@@ -202,6 +278,16 @@
             if (fabCount) fabCount.textContent = count;
             if (fab) fab.classList.toggle('hidden', !count);
         }
+
+        function b10InitCardTrace() {
+            document.querySelectorAll('.card-trace-outline').forEach(function (rect) {
+                var length = rect.getTotalLength();
+                var card = rect.closest('.product-card-glow');
+                if (card) card.style.setProperty('--peri', length);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', b10InitCardTrace);
+        window.addEventListener('resize', b10InitCardTrace);
 
         document.addEventListener('submit', function (event) {
             const form = event.target;

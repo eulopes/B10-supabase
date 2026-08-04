@@ -6,12 +6,18 @@ check-in de evento, uma futura integração com Discord/Twitch/Shopify —
 deve chamar PointsEngineService.award_points() em vez de tocar no model
 diretamente. Isso mantém a regra de negócio num único lugar testável.
 """
+from decimal import Decimal
+
 from django.db import transaction
 
 from apps.users.models import UserProfile
 
 from .models import PointsTransaction, Redemption, RewardItem, TierRule
 from .signals import points_awarded, tier_changed
+
+# Conversão de pontos em desconto monetário: 1 ponto = R$ 0,10 (ex: 214 pts = R$ 21,40).
+# Aplicada sobre current_balance (saldo gastável), não total_points (histórico, nunca decresce).
+POINTS_TO_DISCOUNT_RATE = Decimal('0.10')
 
 
 class InsufficientBalanceError(Exception):
@@ -108,4 +114,6 @@ class DashboardService:
             'points_needed': points_needed,
             'tier_rules': TierRule.objects.ordered(),
             'recent_transactions': PointsTransaction.objects.filter(user=user)[:15],
+            'points_discount_value': profile.current_balance * POINTS_TO_DISCOUNT_RATE,
+            'points_discount_rate': POINTS_TO_DISCOUNT_RATE,
         }
