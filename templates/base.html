@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}B10 | Bateria Dezorganizada{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Anton', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        base: '#000000',
+                        card: '#0d0d0d',
+                        line: '#262626',
+                        smoke: '#a3a3a3',
+                        fire1: '#ffd400',
+                        fire2: '#ff6a00',
+                        fire3: '#ff1744',
+                        bronze: '#c78a4b',
+                        silver: '#c0c0c0',
+                        gold: '#ffd400',
+                        legend: '#ff1744',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Anton', sans-serif; letter-spacing: 0.01em; }
+
+        input[type=text], input[type=password], input[type=email], input[type=number] {
+            width: 100%;
+            background-color: #0d0d0d;
+            border: 1px solid #262626;
+            border-radius: 0.5rem;
+            padding: 0.6rem 0.9rem;
+            color: white;
+        }
+        input:focus { outline: 2px solid #ff6a00; outline-offset: 1px; }
+
+        @keyframes fab-pop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .fab-cart { animation: fab-pop 0.35s ease-out; }
+
+        .fire-text {
+            background: linear-gradient(90deg, #ffd400, #ff6a00 55%, #ff1744);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .btn-fire {
+            background: linear-gradient(135deg, #ffd400 0%, #ff6a00 55%, #ff1744 100%);
+            box-shadow: 0 0 25px -6px rgba(255, 106, 0, 0.7);
+            color: #0d0d0d;
+        }
+        .btn-fire:hover { box-shadow: 0 0 35px -3px rgba(255, 23, 68, 0.85); }
+
+        .hero-glow {
+            background:
+                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(255,106,0,0.25), transparent),
+                #000;
+        }
+    </style>
+</head>
+<body class="h-full bg-base text-white flex flex-col min-h-screen antialiased">
+
+    <header class="bg-black/90 border-b border-line sticky top-0 z-40 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
+            <a href="{% url 'catalog' %}" class="font-display text-3xl uppercase tracking-wide">
+                <span class="fire-text">B10</span> <span class="text-white text-xl align-middle">Dezorganizada</span>
+            </a>
+
+            <nav class="flex items-center gap-5 text-sm font-bold uppercase tracking-wide text-smoke">
+                <a href="{% url 'catalog' %}" class="hover:text-white transition">Loja</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="hover:text-white transition">Meu Passaporte</a>
+                    <a href="{% url 'cart_detail' %}" class="hover:text-white transition relative">
+                        Carrinho
+                        {% if cart_items_count %}
+                            <span class="absolute -top-2 -right-3 bg-fire3 text-white text-xs font-black rounded-full w-5 h-5 flex items-center justify-center">{{ cart_items_count }}</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
+            </nav>
+
+            <div class="flex items-center gap-3">
+                {% if user.is_authenticated and nav_profile %}
+                    <span class="inline-flex items-center gap-1 bg-card border border-line text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
+                        🔥 {{ nav_profile.total_points }} pts
+                    </span>
+                    <span class="inline-flex items-center gap-1 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wide
+                        {% if nav_profile.tier == 'INICIANTE' %} bg-bronze/20 text-bronze border border-bronze/40
+                        {% elif nav_profile.tier == 'RITMISTA' %} bg-silver/20 text-silver border border-silver/40
+                        {% elif nav_profile.tier == 'PUXADOR' %} bg-fire2/20 text-fire2 border border-fire2/40
+                        {% else %} bg-fire3/20 text-fire3 border border-fire3/40
+                        {% endif %}">
+                        {{ nav_profile.get_tier_display }}
+                    </span>
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-xs text-smoke hover:text-white transition uppercase font-bold">Sair</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-sm text-smoke hover:text-white transition font-bold uppercase">Entrar</a>
+                    <a href="{% url 'register' %}" class="btn-fire text-sm font-black uppercase px-4 py-2 rounded-lg transition tracking-wide">Entrar na Bateria</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="rounded-lg px-4 py-3 text-sm font-medium
+                        {% if message.tags == 'error' %} bg-fire3/10 text-fire3 border border-fire3/30
+                        {% else %} bg-fire2/10 text-fire1 border border-fire2/40
+                        {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% if user.is_authenticated and cart_items_count %}
+        <a href="{% url 'cart_detail' %}"
+           class="fab-cart fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 rounded-full
+                  btn-fire transition hover:scale-105">
+            <span class="text-2xl">🛒</span>
+            <span class="absolute -top-1 -right-1 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center border-2 border-base">
+                {{ cart_items_count }}
+            </span>
+        </a>
+    {% endif %}
+
+    <footer class="border-t border-line py-6 text-center text-xs text-smoke uppercase tracking-wide">
+        Bateria Dezorganizada · B10 &mdash; Programa oficial de fidelidade da torcida.
+    </footer>
+</body>
+</html>

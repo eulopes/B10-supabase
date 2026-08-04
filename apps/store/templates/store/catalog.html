@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Loja B10{% endblock %}
+
+{% block content %}
+<div class="hero-glow -mx-4 px-4 py-10 mb-10 rounded-2xl border border-line text-center">
+    <p class="fire-text font-black uppercase tracking-widest text-sm mb-2">Programa de Fidelidade B10</p>
+    <h1 class="font-display text-5xl sm:text-6xl uppercase leading-none mb-3">
+        Quanto mais você grita,<br class="hidden sm:block"> <span class="fire-text">mais você ganha.</span>
+    </h1>
+    <p class="text-smoke max-w-xl mx-auto">Acumule pontos em cada compra e check-in de evento. Destrave descontos progressivos de até 15% OFF + frete grátis.</p>
+</div>
+
+<div class="flex items-center justify-between mb-6">
+    <h2 class="font-display text-2xl uppercase tracking-wide text-white">Loja</h2>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for entry in products_with_availability %}
+    {% with product=entry.product available=entry.available %}
+    <div class="group rounded-2xl border border-line bg-card overflow-hidden flex flex-col transition hover:border-fire2 {% if not available %} opacity-60 {% endif %}">
+        <div class="relative h-44 bg-line/40 flex items-center justify-center overflow-hidden">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition duration-300 {% if available %} group-hover:scale-105 {% endif %}">
+            {% else %}
+                <span class="text-smoke text-sm">Sem imagem</span>
+            {% endif %}
+            {% if product.is_exclusive_tier %}
+                <span class="absolute top-2 right-2 bg-fire3 text-white text-[10px] font-black uppercase px-2 py-1 rounded-full tracking-wide">
+                    Exclusivo {{ product.is_exclusive_tier.label }}
+                </span>
+            {% endif %}
+        </div>
+        <div class="p-4 flex flex-col flex-1">
+            <h3 class="font-semibold text-white">{{ product.name }}</h3>
+            <p class="text-sm text-smoke flex-1 mt-1 line-clamp-2">{{ product.description }}</p>
+            <div class="mt-4 flex items-center justify-between">
+                <span class="font-display text-2xl fire-text">R$ {{ product.price }}</span>
+                {% if user.is_authenticated %}
+                    {% if available %}
+                    <form action="{% url 'add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-fire text-sm font-black uppercase px-4 py-2 rounded-lg transition tracking-wide">
+                            Quero esse
+                        </button>
+                    </form>
+                    {% else %}
+                    <span class="text-xs text-smoke uppercase font-bold tracking-wide">Bloqueado</span>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'login' %}" class="text-sm bg-line hover:bg-line/70 text-white font-bold uppercase px-4 py-2 rounded-lg transition tracking-wide">
+                    Entrar
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <p class="text-smoke col-span-full">Nenhum produto cadastrado ainda.</p>
+    {% endfor %}
+</div>
+{% endblock %}

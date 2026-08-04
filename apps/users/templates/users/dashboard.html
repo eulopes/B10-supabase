@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Meu Passaporte B10{% endblock %}
+
+{% block content %}
+{% with tier=profile.tier %}
+<div class="grid gap-8">
+
+    <div class="hero-glow rounded-2xl p-8 border border-line">
+        <p class="fire-text font-black uppercase tracking-widest text-sm mb-1">Passaporte B10</p>
+
+        <div class="flex items-center gap-5 mb-6">
+            <div class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-display border-4
+                {% if tier == 'INICIANTE' %} bg-bronze/20 text-bronze border-bronze
+                {% elif tier == 'RITMISTA' %} bg-silver/20 text-silver border-silver
+                {% elif tier == 'PUXADOR' %} bg-fire2/20 text-fire2 border-fire2
+                {% else %} bg-fire3/20 text-fire3 border-fire3
+                {% endif %}">
+                {{ profile.get_tier_display|first }}
+            </div>
+            <div>
+                <h1 class="font-display text-5xl uppercase leading-none
+                    {% if tier == 'INICIANTE' %} text-bronze
+                    {% elif tier == 'RITMISTA' %} text-silver
+                    {% elif tier == 'PUXADOR' %} text-fire2
+                    {% else %} fire-text
+                    {% endif %}">
+                    {{ profile.get_tier_display }}
+                </h1>
+                <p class="text-smoke text-sm uppercase tracking-wide">{{ current_rule.discount_percent }}% OFF automático{% if current_rule.free_shipping %} + Frete Grátis{% endif %}</p>
+            </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6 mb-6">
+            <div class="bg-card border border-line rounded-xl p-4">
+                <p class="text-xs text-smoke uppercase tracking-wide">Pontos acumulados (histórico)</p>
+                <p class="font-display text-3xl text-white">{{ profile.total_points }} <span class="text-base text-smoke font-sans font-normal">pts</span></p>
+            </div>
+            <div class="bg-card border border-line rounded-xl p-4">
+                <p class="text-xs text-smoke uppercase tracking-wide">Saldo disponível p/ resgate</p>
+                <p class="font-display text-3xl fire-text">{{ profile.current_balance }} pts</p>
+            </div>
+        </div>
+
+        <div>
+            {% if next_rule %}
+                <div class="flex justify-between text-xs text-smoke uppercase tracking-wide mb-1">
+                    <span>Progresso para {{ next_rule.label }}</span>
+                    <span>{{ points_needed }} pts restantes</span>
+                </div>
+                <div class="w-full h-3 bg-line rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-fire1 via-fire2 to-fire3 transition-all duration-500" style="width: {{ progress_percent }}%"></div>
+                </div>
+            {% else %}
+                <p class="text-sm fire-text font-black uppercase tracking-wide">🏆 Você é uma LENDA B10 — nível máximo atingido!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-line bg-card overflow-hidden">
+        <div class="px-6 py-4 border-b border-line">
+            <h2 class="font-display text-2xl uppercase tracking-wide text-white">Régua de Benefícios</h2>
+        </div>
+
+        <div class="grid sm:grid-cols-4 gap-px bg-line">
+            {% for rule in tier_rules %}
+            <div class="bg-card p-5 text-center {% if rule.code == tier %} bg-fire2/10 {% endif %}">
+                <div class="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center text-lg font-display border-2
+                    {% if rule.code == 'INICIANTE' %} bg-bronze/20 text-bronze border-bronze
+                    {% elif rule.code == 'RITMISTA' %} bg-silver/20 text-silver border-silver
+                    {% elif rule.code == 'PUXADOR' %} bg-fire2/20 text-fire2 border-fire2
+                    {% else %} bg-fire3/20 text-fire3 border-fire3
+                    {% endif %}">
+                    {{ rule.label|first }}
+                </div>
+                <p class="font-display text-lg uppercase
+                    {% if rule.code == 'INICIANTE' %} text-bronze
+                    {% elif rule.code == 'RITMISTA' %} text-silver
+                    {% elif rule.code == 'PUXADOR' %} text-fire2
+                    {% else %} text-fire3
+                    {% endif %}">
+                    {{ rule.label }}
+                </p>
+                <p class="text-xs text-smoke mt-1">
+                    {% if rule.max_points %}{{ rule.min_points }} – {{ rule.max_points }}{% else %}{{ rule.min_points }}+{% endif %} pts
+                </p>
+                <p class="text-sm font-bold text-white mt-2">{{ rule.discount_percent }}% OFF{% if rule.free_shipping %} + Frete{% endif %}</p>
+                {% if rule.code == tier %}
+                    <p class="text-[10px] fire-text uppercase font-black mt-2 tracking-wide">você está aqui</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-line bg-card overflow-hidden">
+        <div class="px-6 py-4 border-b border-line">
+            <h2 class="font-display text-2xl uppercase tracking-wide text-white">Extrato de Pontos</h2>
+        </div>
+        <div class="divide-y divide-line">
+            {% for tx in recent_transactions %}
+            <div class="px-6 py-3 flex items-center justify-between text-sm">
+                <div>
+                    <p class="text-white font-medium">{{ tx.reason }}</p>
+                    <p class="text-xs text-smoke uppercase tracking-wide">{{ tx.get_source_display }} · {{ tx.created_at|date:"d/m/Y H:i" }}</p>
+                </div>
+                <p class="font-display text-lg {% if tx.amount >= 0 %} text-fire1 {% else %} text-fire3 {% endif %}">
+                    {% if tx.amount >= 0 %}+{% endif %}{{ tx.amount }}
+                </p>
+            </div>
+            {% empty %}
+            <p class="px-6 py-6 text-smoke text-sm text-center">Nenhuma movimentação ainda. Bora fazer sua primeira compra ou check-in!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endwith %}
+{% endblock %}

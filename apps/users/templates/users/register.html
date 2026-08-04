@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Entrar na Bateria{% endblock %}
+
+{% block content %}
+<div class="max-w-sm mx-auto rounded-2xl border border-line bg-card p-8">
+    <h1 class="font-display text-3xl uppercase text-white mb-6">Entrar na Bateria</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            <label class="block text-sm text-smoke mb-1 uppercase tracking-wide">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="text-xs text-smoke/70 mt-1">{{ field.help_text }}</p>{% endif %}
+            {% for error in field.errors %}<p class="text-xs text-fire3 mt-1">{{ error }}</p>{% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="w-full btn-fire font-black uppercase tracking-wide py-3 rounded-lg transition">
+            Criar conta
+        </button>
+    </form>
+    <p class="text-sm text-smoke mt-4">
+        Já tem conta? <a href="{% url 'login' %}" class="fire-text font-semibold">Entrar</a>
+    </p>
+</div>
+{% endblock %}

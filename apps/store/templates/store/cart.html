@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Carrinho{% endblock %}
+
+{% block content %}
+<h1 class="font-display text-4xl uppercase text-white mb-6">Seu Carrinho</h1>
+
+{% if summary.lines %}
+<div class="grid lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-2 space-y-4">
+        {% if summary.next_rule and summary.amount_to_next_tier > 0 %}
+        <div class="rounded-xl border border-fire2/40 bg-fire2/10 px-4 py-3 text-sm text-fire1 font-medium">
+            🔥 Faltam apenas <strong>R$ {{ summary.amount_to_next_tier }}</strong> para você atingir o nível
+            <strong>{{ summary.next_rule.label }}</strong> e liberar <strong>{{ summary.next_rule.discount_percent }}% OFF</strong>{% if summary.next_rule.free_shipping %} + Frete Grátis{% endif %}!
+        </div>
+        {% endif %}
+
+        {% for line in summary.lines %}
+        <div class="flex items-center gap-4 rounded-xl border border-line bg-card p-4">
+            <div class="w-16 h-16 bg-line/40 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                {% if line.product.image_url %}
+                    <img src="{{ line.product.image_url }}" alt="{{ line.product.name }}" class="w-full h-full object-cover">
+                {% endif %}
+            </div>
+            <div class="flex-1">
+                <p class="font-semibold text-white">{{ line.product.name }}</p>
+                <p class="text-sm text-smoke">R$ {{ line.product.price }} / un.</p>
+            </div>
+            <form action="{% url 'update_cart_quantity' line.product.id %}" method="post" class="flex items-center gap-2">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ line.quantity }}" min="0"
+                       class="w-16 bg-base border border-line rounded-lg px-2 py-1 text-center text-sm">
+                <button type="submit" class="text-xs text-smoke hover:text-white underline uppercase tracking-wide">atualizar</button>
+            </form>
+            <p class="w-24 text-right font-display text-lg text-white">R$ {{ line.line_subtotal }}</p>
+            <a href="{% url 'remove_from_cart' line.product.id %}" class="text-fire3 hover:text-red-300 text-sm">✕</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="rounded-2xl border border-line bg-card p-6 h-fit space-y-3">
+        <h2 class="font-display text-xl uppercase tracking-wide text-white mb-2">Resumo do Pedido</h2>
+
+        <div class="flex justify-between text-sm text-smoke">
+            <span>Subtotal</span>
+            <span>R$ {{ summary.subtotal }}</span>
+        </div>
+        <div class="flex justify-between text-sm text-fire1 font-semibold">
+            <span>Desconto do Tier (-{{ summary.tier_discount_percent }}%)</span>
+            <span>- R$ {{ summary.tier_discount_value }}</span>
+        </div>
+        {% if summary.free_shipping %}
+        <div class="flex justify-between text-sm text-fire1 font-semibold">
+            <span>Frete</span>
+            <span>GRÁTIS</span>
+        </div>
+        {% endif %}
+        <div class="flex justify-between text-lg font-display text-white pt-3 border-t border-line">
+            <span>Total</span>
+            <span>R$ {{ summary.total_final }}</span>
+        </div>
+
+        <div class="mt-4 rounded-lg bg-fire2/10 border border-fire2/40 px-4 py-3 text-sm text-white font-medium">
+            🔥 Essa compra vai render <strong class="fire-text">+{{ summary.points_to_earn }} pontos</strong> no seu passaporte!
+        </div>
+
+        <form action="{% url 'checkout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="w-full mt-2 btn-fire font-black uppercase tracking-wide py-3 rounded-lg transition">
+                Finalizar Compra
+            </button>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-16 text-smoke">
+    <p class="mb-4">Seu carrinho está vazio.</p>
+    <a href="{% url 'catalog' %}" class="fire-text font-black uppercase tracking-wide">Ver loja →</a>
+</div>
+{% endif %}
+{% endblock %}
