@@ -57,7 +57,11 @@
         {% endif %}
         <div class="flex justify-between text-lg font-display text-white pt-3 border-t border-line">
             <span>Total</span>
-            <span>R$ {{ summary.total_final }}</span>
+            <span>R$ {{ summary.total_final_by_currency.BRL }}</span>
+        </div>
+        <div class="flex justify-end gap-3 text-xs text-smoke -mt-1">
+            <span>US$ {{ summary.total_final_by_currency.USD }}</span>
+            <span>€ {{ summary.total_final_by_currency.EUR }}</span>
         </div>
 
         <div class="mt-4 rounded-lg bg-fire2/10 border border-fire2/40 px-4 py-3 text-sm text-white font-medium">

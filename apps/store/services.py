@@ -13,6 +13,7 @@ from django.db import transaction
 from apps.loyalty.models import PointsTransaction, TierRule
 from apps.loyalty.services import PointsEngineService
 
+from .currency import convert_from_brl
 from .models import Order, OrderItem, Product
 
 # Regra de negócio fixa do programa: a cada REAL_AMOUNT_PER_POINT reais
@@ -39,6 +40,7 @@ class CartSummary:
     current_rule: TierRule = None
     next_rule: TierRule = None
     amount_to_next_tier: Decimal = Decimal('0')
+    total_final_by_currency: dict = field(default_factory=dict)
 
     @property
     def is_empty(self):
@@ -92,6 +94,7 @@ class CartPricingService:
             current_rule=current_rule,
             next_rule=next_rule,
             amount_to_next_tier=amount_to_next_tier,
+            total_final_by_currency=convert_from_brl(total_final),
         )
 
 

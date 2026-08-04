@@ -5,6 +5,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 from apps.loyalty.models import TierRule
 
+from .currency import convert_from_brl
 from .models import Order, Product
 from .services import CartPricingService, CheckoutService, EmptyCartError
 
@@ -142,4 +143,5 @@ def payment_gateway(request):
 @login_required
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, pk=order_id, user=request.user)
-    return render(request, 'store/order_confirmation.html', {'order': order})
+    context = {'order': order, 'total_by_currency': convert_from_brl(order.total_final)}
+    return render(request, 'store/order_confirmation.html', context)

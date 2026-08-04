@@ -24,7 +24,11 @@
         {% endif %}
         <div class="flex justify-between text-lg font-display text-white pt-2 border-t border-line">
             <span>Total pago</span>
-            <span>R$ {{ order.total_final }}</span>
+            <span>R$ {{ total_by_currency.BRL }}</span>
+        </div>
+        <div class="flex justify-end gap-3 text-xs text-smoke">
+            <span>US$ {{ total_by_currency.USD }}</span>
+            <span>€ {{ total_by_currency.EUR }}</span>
         </div>
     </div>
 

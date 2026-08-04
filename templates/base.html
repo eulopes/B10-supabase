@@ -1,51 +1,58 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="pt-br" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}B10 | Bateria Dezorganizada{% endblock %}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        display: ['Anton', 'sans-serif'],
-                        sans: ['Inter', 'sans-serif'],
+                        display: ['Bahnschrift', 'Arial Narrow', 'sans-serif'],
+                        sans: ['-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
                     },
                     colors: {
-                        base: '#000000',
-                        card: '#0d0d0d',
-                        line: '#262626',
-                        smoke: '#a3a3a3',
-                        fire1: '#ffd400',
-                        fire2: '#ff6a00',
-                        fire3: '#ff1744',
+                        base: '#070604',
+                        card: '#110e0b',
+                        line: '#2b2119',
+                        smoke: '#948a7c',
+                        fire1: '#ffd23f',
+                        fire2: '#ff7a1a',
+                        fire3: '#ff2340',
                         bronze: '#c78a4b',
                         silver: '#c0c0c0',
-                        gold: '#ffd400',
-                        legend: '#ff1744',
+                        gold: '#ffd23f',
+                        legend: '#ff2340',
                     },
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-display { font-family: 'Anton', sans-serif; letter-spacing: 0.01em; }
+        @font-face {
+            font-family: 'Bahnschrift';
+            src: url("{% static 'fonts/bahnschrift.ttf' %}") format('truetype');
+            font-weight: 100 900;
+            font-display: swap;
+        }
+        body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        h1, h2, h3, .font-display {
+            font-family: 'Bahnschrift', 'Arial Narrow', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.005em;
+        }
 
         input[type=text], input[type=password], input[type=email], input[type=number] {
             width: 100%;
-            background-color: #0d0d0d;
-            border: 1px solid #262626;
+            background-color: #110e0b;
+            border: 1px solid #2b2119;
             border-radius: 0.5rem;
             padding: 0.6rem 0.9rem;
             color: white;
         }
-        input:focus { outline: 2px solid #ff6a00; outline-offset: 1px; }
+        input:focus { outline: 2px solid #ff7a1a; outline-offset: 1px; }
 
         @keyframes fab-pop {
             0% { transform: scale(0); opacity: 0; }
@@ -54,32 +61,51 @@
         }
         .fab-cart { animation: fab-pop 0.35s ease-out; }
 
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .beat { animation: beat 2.4s ease-in-out infinite; }
+
+        @keyframes pulse-ring {
+            0%, 100% { box-shadow: 0 14px 34px -8px rgba(255, 40, 30, 0.65), 0 0 0 1px rgba(255,255,255,0.08); }
+            50% { box-shadow: 0 14px 40px -6px rgba(255, 60, 20, 0.85), 0 0 0 8px rgba(255, 106, 0, 0.06); }
+        }
+        .pulse-cart { animation: pulse-ring 3.2s ease-in-out infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .beat, .pulse-cart, .fab-cart { animation: none; }
+        }
+
         .fire-text {
-            background: linear-gradient(90deg, #ffd400, #ff6a00 55%, #ff1744);
+            background: linear-gradient(90deg, #ffd23f, #ff7a1a 55%, #ff2340);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         .btn-fire {
-            background: linear-gradient(135deg, #ffd400 0%, #ff6a00 55%, #ff1744 100%);
+            background: linear-gradient(135deg, #ffd23f 0%, #ff7a1a 55%, #ff2340 100%);
             box-shadow: 0 0 25px -6px rgba(255, 106, 0, 0.7);
-            color: #0d0d0d;
+            color: #1a0d02;
         }
-        .btn-fire:hover { box-shadow: 0 0 35px -3px rgba(255, 23, 68, 0.85); }
+        .btn-fire:hover { box-shadow: 0 0 35px -3px rgba(255, 35, 64, 0.85); }
+        .btn-fire:active { transform: scale(0.97); }
 
         .hero-glow {
             background:
-                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(255,106,0,0.25), transparent),
-                #000;
+                radial-gradient(ellipse 70% 55% at 50% -10%, rgba(255,122,26,0.28), transparent),
+                #070604;
         }
+
+        :focus-visible { outline: 2px solid #ff7a1a; outline-offset: 3px; }
     </style>
 </head>
 <body class="h-full bg-base text-white flex flex-col min-h-screen antialiased">
 
-    <header class="bg-black/90 border-b border-line sticky top-0 z-40 backdrop-blur">
+    <header class="bg-[rgba(5,4,3,0.86)] border-b border-line sticky top-0 z-40 backdrop-blur">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
-            <a href="{% url 'catalog' %}" class="font-display text-3xl uppercase tracking-wide">
-                <span class="fire-text">B10</span> <span class="text-white text-xl align-middle">Dezorganizada</span>
+            <a href="{% url 'catalog' %}" class="font-display text-3xl uppercase tracking-wide flex items-baseline gap-2">
+                <span class="fire-text">B10</span> <span class="text-white text-xl">Dezorganizada</span>
             </a>
 
             <nav class="flex items-center gap-5 text-sm font-bold uppercase tracking-wide text-smoke">
@@ -89,7 +115,7 @@
                     <a href="{% url 'cart_detail' %}" class="hover:text-white transition relative">
                         Carrinho
                         {% if cart_items_count %}
-                            <span class="absolute -top-2 -right-3 bg-fire3 text-white text-xs font-black rounded-full w-5 h-5 flex items-center justify-center">{{ cart_items_count }}</span>
+                            <span class="beat absolute -top-2 -right-3 bg-fire3 text-white text-xs font-black rounded-full w-5 h-5 flex items-center justify-center shadow-[0_0_0_2px_#070604]">{{ cart_items_count }}</span>
                         {% endif %}
                     </a>
                 {% endif %}
@@ -97,10 +123,11 @@
 
             <div class="flex items-center gap-3">
                 {% if user.is_authenticated and nav_profile %}
-                    <span class="inline-flex items-center gap-1 bg-card border border-line text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
-                        🔥 {{ nav_profile.total_points }} pts
+                    <span class="inline-flex items-center gap-1.5 bg-card border border-line text-fire1 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide tabular-nums">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 4-3 5-1 9 1-2 3-2 3 0 0 3-2 5-5 5-4 0-6-3-6-6 0-4 4-6 4-10 2 1 4 1 5 2z"/></svg>
+                        {{ nav_profile.total_points }} PTS
                     </span>
-                    <span class="inline-flex items-center gap-1 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wide
+                    <span class="inline-flex items-center gap-1 font-display text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide
                         {% if nav_profile.tier == 'INICIANTE' %} bg-bronze/20 text-bronze border border-bronze/40
                         {% elif nav_profile.tier == 'RITMISTA' %} bg-silver/20 text-silver border border-silver/40
                         {% elif nav_profile.tier == 'PUXADOR' %} bg-fire2/20 text-fire2 border border-fire2/40
@@ -138,18 +165,18 @@
     </main>
 
     {% if user.is_authenticated and cart_items_count %}
-        <a href="{% url 'cart_detail' %}"
-           class="fab-cart fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 rounded-full
+        <a href="{% url 'cart_detail' %}" aria-label="Abrir carrinho, {{ cart_items_count }} itens"
+           class="fab-cart pulse-cart fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 rounded-full
                   btn-fire transition hover:scale-105">
-            <span class="text-2xl">🛒</span>
-            <span class="absolute -top-1 -right-1 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center border-2 border-base">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#1a0d02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L22 7H6"/></svg>
+            <span class="beat absolute -top-1 -right-1 bg-white text-black text-xs font-black rounded-full w-6 h-6 flex items-center justify-center border-2 border-base">
                 {{ cart_items_count }}
             </span>
         </a>
     {% endif %}
 
     <footer class="border-t border-line py-6 text-center text-xs text-smoke uppercase tracking-wide">
-        Bateria Dezorganizada · B10 &mdash; Programa oficial de fidelidade da torcida.
+        Bateria Dezorganizada · B10 &mdash; Nascida no Rio Major 2022, parceira da FURIA.
     </footer>
 </body>
 </html>
