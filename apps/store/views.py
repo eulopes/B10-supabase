@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 
@@ -30,21 +31,35 @@ def catalog(request):
     return render(request, 'store/catalog.html', {'products_with_availability': products_with_availability})
 
 
+def _is_ajax(request):
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     profile = request.user.userprofile
 
     if not product.is_available_for(profile):
-        messages.error(request, f'"{product.name}" é exclusivo para torcedores {product.is_exclusive_tier.label}.')
+        error = f'"{product.name}" é exclusivo para torcedores {product.is_exclusive_tier.label}.'
+        if _is_ajax(request):
+            return JsonResponse({'ok': False, 'error': error}, status=403)
+        messages.error(request, error)
         return redirect('catalog')
 
     cart = _get_cart(request)
     key = str(product.id)
     cart[key] = cart.get(key, 0) + 1
     _save_cart(request, cart)
-    messages.success(request, f'"{product.name}" adicionado ao carrinho.')
 
+    if _is_ajax(request):
+        return JsonResponse({
+            'ok': True,
+            'message': f'"{product.name}" adicionado ao carrinho.',
+            'cart_items_count': sum(cart.values()),
+        })
+
+    messages.success(request, f'"{product.name}" adicionado ao carrinho.')
     referer = request.META.get('HTTP_REFERER')
     if referer and url_has_allowed_host_and_scheme(referer, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
         return redirect(referer)

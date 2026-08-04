@@ -39,7 +39,7 @@
                 <span class="font-display text-2xl fire-text">R$ {{ product.price }}</span>
                 {% if user.is_authenticated %}
                     {% if available %}
-                    <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    <form action="{% url 'add_to_cart' product.id %}" method="post" class="js-add-to-cart">
                         {% csrf_token %}
                         <button type="submit" class="btn-fire text-sm font-black uppercase px-4 py-2 rounded-lg transition tracking-wide">
                             Quero esse

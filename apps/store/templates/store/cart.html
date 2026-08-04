@@ -16,24 +16,30 @@
         {% endif %}
 
         {% for line in summary.lines %}
-        <div class="flex items-center gap-4 rounded-xl border border-line bg-card p-4">
-            <div class="w-16 h-16 bg-line/40 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-                {% if line.product.image_url %}
-                    <img src="{{ line.product.image_url }}" alt="{{ line.product.name }}" class="w-full h-full object-cover">
-                {% endif %}
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-xl border border-line bg-card p-4">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-line/40 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                    {% if line.product.image_url %}
+                        <img src="{{ line.product.image_url }}" alt="{{ line.product.name }}" class="w-full h-full object-cover">
+                    {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-white truncate">{{ line.product.name }}</p>
+                    <p class="text-sm text-smoke">R$ {{ line.product.price }} / un.</p>
+                </div>
+                <a href="{% url 'remove_from_cart' line.product.id %}" class="sm:hidden text-fire3 hover:text-red-300 text-sm shrink-0">✕</a>
             </div>
-            <div class="flex-1">
-                <p class="font-semibold text-white">{{ line.product.name }}</p>
-                <p class="text-sm text-smoke">R$ {{ line.product.price }} / un.</p>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 sm:flex-1">
+                <form action="{% url 'update_cart_quantity' line.product.id %}" method="post" class="flex items-center gap-2 shrink-0">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ line.quantity }}" min="0"
+                           class="w-16 bg-base border border-line rounded-lg px-2 py-1 text-center text-sm">
+                    <button type="submit" class="text-xs text-smoke hover:text-white underline uppercase tracking-wide">atualizar</button>
+                </form>
+                <p class="text-right font-display text-lg text-white sm:w-24 shrink-0">R$ {{ line.line_subtotal }}</p>
+                <a href="{% url 'remove_from_cart' line.product.id %}" class="hidden sm:inline text-fire3 hover:text-red-300 text-sm shrink-0">✕</a>
             </div>
-            <form action="{% url 'update_cart_quantity' line.product.id %}" method="post" class="flex items-center gap-2">
-                {% csrf_token %}
-                <input type="number" name="quantity" value="{{ line.quantity }}" min="0"
-                       class="w-16 bg-base border border-line rounded-lg px-2 py-1 text-center text-sm">
-                <button type="submit" class="text-xs text-smoke hover:text-white underline uppercase tracking-wide">atualizar</button>
-            </form>
-            <p class="w-24 text-right font-display text-lg text-white">R$ {{ line.line_subtotal }}</p>
-            <a href="{% url 'remove_from_cart' line.product.id %}" class="text-fire3 hover:text-red-300 text-sm">✕</a>
         </div>
         {% endfor %}
     </div>
