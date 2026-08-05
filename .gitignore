@@ -4,8 +4,15 @@ __pycache__/
 *.pyo
 
 # Django
+db.sqlite3
+db.sqlite3-journal
 *.log
 staticfiles/
+
+# Agent skills (instale local com "npx skills add ...")
+.agents/
+.claude/
+skills-lock.json
 
 # Env / virtualenv
 .env
