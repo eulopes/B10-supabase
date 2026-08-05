@@ -13,19 +13,19 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('image_preview_large',)
-    fields = ('name', 'slug', 'description', 'price', 'stock', 'is_exclusive_tier', 'image_url', 'image_preview_large')
+    fields = ('name', 'slug', 'description', 'price', 'stock', 'is_exclusive_tier', 'image', 'image_url', 'image_preview_large')
 
     @admin.display(description='Foto')
     def image_preview(self, obj):
-        if not obj.image_url:
+        if not obj.display_image_url:
             return '—'
-        return format_html('<img src="{}" style="height:40px;width:40px;object-fit:cover;border-radius:6px;">', obj.image_url)
+        return format_html('<img src="{}" style="height:40px;width:40px;object-fit:cover;border-radius:6px;">', obj.display_image_url)
 
     @admin.display(description='Pré-visualização')
     def image_preview_large(self, obj):
-        if not obj.image_url:
+        if not obj.display_image_url:
             return 'Sem imagem definida ainda.'
-        return format_html('<img src="{}" style="max-height:220px;border-radius:8px;">', obj.image_url)
+        return format_html('<img src="{}" style="max-height:220px;border-radius:8px;">', obj.display_image_url)
 
 
 @admin.register(Coupon)

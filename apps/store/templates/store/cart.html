@@ -19,8 +19,8 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-xl border border-line bg-card p-4">
             <div class="flex items-center gap-4">
                 <div class="w-16 h-16 bg-line/40 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-                    {% if line.product.image_url %}
-                        <img src="{{ line.product.image_url }}" alt="{{ line.product.name }}" class="w-full h-full object-cover">
+                    {% if line.product.display_image_url %}
+                        <img src="{{ line.product.display_image_url }}" alt="{{ line.product.name }}" class="w-full h-full object-cover">
                     {% endif %}
                 </div>
                 <div class="flex-1 min-w-0">

@@ -20,8 +20,8 @@
     {% with product=entry.product available=entry.available %}
     <div class="product-card-glow group relative rounded-2xl overflow-hidden flex flex-col transition bg-card {% if not available %} opacity-60 {% endif %}">
         <div class="relative h-48 bg-line/40 flex items-center justify-center overflow-hidden">
-            {% if product.image_url %}
-                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition duration-300 {% if available %} group-hover:scale-105 {% endif %}">
+            {% if product.display_image_url %}
+                <img src="{{ product.display_image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition duration-300 {% if available %} group-hover:scale-105 {% endif %}">
             {% else %}
                 <span class="text-smoke text-sm">Sem imagem</span>
             {% endif %}
